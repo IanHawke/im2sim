@@ -14,5 +14,12 @@ So, as a quick hack, here is `im2sim`: a way of embedding metadata directly into
 
 As a quick hack, we're going to rely on [docker](docker.com) for the reproducibility, and essentially embed links to containers directly.
 
+## Current status
 
+This should work
 
+* when run using boot2docker (Mac OS)
+* when run on png files
+* when using the specific container for the pyro code that I've used to create the figure in the example_figure directory.
+
+I don't think it would be at all difficult to remove any of these restrictions, but this is enough for proof-of-principle.
