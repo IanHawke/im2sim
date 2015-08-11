@@ -14,7 +14,7 @@ def get_image(filename):
 
 def tag_images(docker_image):
     subprocess.call(['mkdir', '-p', 'figures'])
-    subprocess.call("docker run -v {}/figures:/home/pyro/pyro2/figures "
+    subprocess.call("docker run -v {}/figures:/figures "
     "{} make figures".format(os.getcwd(), docker_image), shell=True)
 
     figures = glob.glob('{}/figures/*.png'.format(os.getcwd()))
