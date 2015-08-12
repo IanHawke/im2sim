@@ -1,14 +1,24 @@
 import argparse
 
-import PIL
-from PIL import Image
+import libxmp
+from libxmp import XMPFiles, XMPMeta
+from libxmp.utils import file_to_dict
+import ast
+
 import subprocess
 import os
 import glob
 
 def get_image(filename):
-    p = Image.open(filename)
-    docker_image = p.info['im2sim_image']
+    xmp = file_to_dict(filename)
+    dc = xmp[libxmp.consts.XMP_NS_DC]
+    docker_image = None
+    for name, value, d in dc:
+        if name.find('creator') >= 0:
+            if value.find('im2sim') >= 0:
+                d = ast.literal_eval(value)
+                docker_image = d['im2sim']
+                print('From file {} found dc {} and image {}'.format(filename, dc, docker_image))
     return subprocess.call('docker pull {}'.format(docker_image), shell=True)
     print('Pulled docker image {}'.format(docker_image))
 
@@ -19,10 +29,13 @@ def tag_images(docker_image):
 
     figures = glob.glob('{}/figures/*.png'.format(os.getcwd()))
     for filename in figures:
-        p = Image.open(filename)
-        info = PIL.PngImagePlugin.PngInfo()
-        info.add_text('im2sim_image', docker_image)
-        p.save(filename, pnginfo = info)
+        xmpfile = XMPFiles(file_path=filename, open_forupdate=True)
+        xmp = xmpfile.get_xmp()
+        if xmp == None:
+            xmp = XMPMeta()
+        xmp.append_array_item(libxmp.consts.XMP_NS_DC, 'creator', '{ "im2sim : {}" }'.format(docker_image), {'prop_array_is_ordered': True, 'prop_value_is_array': True})
+        xmpfile.put_xmp(xmp)
+        xmpfile.close_file()
 
     return None
 
