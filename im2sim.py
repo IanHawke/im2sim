@@ -18,8 +18,13 @@ def get_image(filename):
             if value.find('im2sim') >= 0:
                 d = ast.literal_eval(value)
                 docker_image = d['im2sim']
+
     print('Pulling docker image {}'.format(docker_image))
-    return subprocess.call('docker pull {}'.format(docker_image), shell=True)
+    print("""To inspect the code, try
+
+    docker run -ti {} /bin/bash""".format(docker_image))
+    FNULL = open(os.devnull, 'w')
+    return subprocess.call('docker pull {}'.format(docker_image), stdout=FNULL, shell=True)
 
 def tag_images(docker_image):
     subprocess.call(['mkdir', '-p', 'figures'])
