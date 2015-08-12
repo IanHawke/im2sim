@@ -24,6 +24,10 @@ This should work
 
 I don't think it would be at all difficult to remove any of these restrictions, but this is enough for proof-of-principle.
 
+### XMP branch
+
+This branch uses the [python XMP toolkit](http://python-xmp-toolkit.readthedocs.org/en/latest/index.html) and the XMP metadata rather than PIL. This should make it much more robust, and automatically cover many different files formats, but gives a much heavier set of requirements.
+
 # Usage
 
 ## Replicating a simulation given a figure
