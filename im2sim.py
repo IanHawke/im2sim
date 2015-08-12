@@ -18,9 +18,8 @@ def get_image(filename):
             if value.find('im2sim') >= 0:
                 d = ast.literal_eval(value)
                 docker_image = d['im2sim']
-                print('From file {} found dc {} and image {}'.format(filename, dc, docker_image))
+    print('Pulling docker image {}'.format(docker_image))
     return subprocess.call('docker pull {}'.format(docker_image), shell=True)
-    print('Pulled docker image {}'.format(docker_image))
 
 def tag_images(docker_image):
     subprocess.call(['mkdir', '-p', 'figures'])
@@ -33,7 +32,7 @@ def tag_images(docker_image):
         xmp = xmpfile.get_xmp()
         if xmp == None:
             xmp = XMPMeta()
-        xmp.append_array_item(libxmp.consts.XMP_NS_DC, 'creator', '{ "im2sim : {}" }'.format(docker_image), {'prop_array_is_ordered': True, 'prop_value_is_array': True})
+        xmp.append_array_item(libxmp.consts.XMP_NS_DC, 'creator', '{{ "im2sim" : "{}" }}'.format(docker_image), {'prop_array_is_ordered': True, 'prop_value_is_array': True})
         xmpfile.put_xmp(xmp)
         xmpfile.close_file()
 
